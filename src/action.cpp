@@ -1379,7 +1379,7 @@ ActionMkTerm::generate(Op::Kind kind)
     if (arity == MURXLA_MK_TERM_N_ARGS || arity == MURXLA_MK_TERM_N_ARGS_BIN)
     {
       int32_t min_arity = MURXLA_MK_TERM_N_ARGS_MIN(arity);
-      assert(0 < min_arity && min_arity < d_n_args_weights.size());
+      assert(0 < min_arity && (size_t) min_arity < d_n_args_weights.size());
       arity              = d_rng.pick_weighted<int32_t>(
           d_n_args_weights.begin(), d_n_args_weights.end() - (min_arity - 1));
       arity += min_arity;
