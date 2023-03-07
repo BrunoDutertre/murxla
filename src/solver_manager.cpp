@@ -466,7 +466,7 @@ SolverManager::pick_op_kind(bool with_terms, SortKind sort_kind)
       }
       else
       {
-        for (int32_t i = 0; i < op.d_arity; ++i)
+        for (size_t i = 0; i < (size_t) op.d_arity; ++i)
         {
           if (!has_term(op.get_arg_sort_kind(i)))
           {
@@ -1414,7 +1414,7 @@ SolverManager::add_enabled_theories(const TheoryVector& enabled_theories,
                                   tmp.begin());
 
   /* Resize to intersection size. */
-  tmp.resize(it - tmp.begin());
+  tmp.resize((size_t)(it - tmp.begin()));
   d_enabled_theories = TheorySet(tmp.begin(), tmp.end());
 
   /* Remove disabled theories. */

@@ -1378,8 +1378,9 @@ ActionMkTerm::generate(Op::Kind kind)
 
     if (arity == MURXLA_MK_TERM_N_ARGS || arity == MURXLA_MK_TERM_N_ARGS_BIN)
     {
-      uint32_t min_arity = MURXLA_MK_TERM_N_ARGS_MIN(arity);
-      arity              = d_rng.pick_weighted<uint32_t>(
+      int32_t min_arity = MURXLA_MK_TERM_N_ARGS_MIN(arity);
+      assert(0 < min_arity && min_arity < d_n_args_weights.size());
+      arity              = d_rng.pick_weighted<int32_t>(
           d_n_args_weights.begin(), d_n_args_weights.end() - (min_arity - 1));
       arity += min_arity;
     }
@@ -1693,7 +1694,7 @@ ActionMkTerm::generate(Op::Kind kind)
       std::unordered_map<SortKind, Sort> sorts;
       for (int32_t i = 0; i < arity; ++i)
       {
-        SortKindSet skinds = op.get_arg_sort_kind(i);
+        SortKindSet skinds = op.get_arg_sort_kind((size_t) i);
         assert(d_smgr.has_term(skinds));
         std::unordered_map<SortKind, Sort>::iterator it;
         Sort sort;
@@ -2389,7 +2390,7 @@ ActionMkTerm::mk_store(const Sort& array_sort,
                        const Sort& element_sort)
 {
   size_t nstores =
-      d_rng.flip_coin() ? 0 : d_rng.pick(1, MURXLA_MAX_STORE_CHAIN_LENGTH);
+      d_rng.flip_coin() ? 0 : d_rng.pick<size_t>(1, MURXLA_MAX_STORE_CHAIN_LENGTH);
   Term result = d_smgr.pick_term(array_sort);
 
   Term index, element;
@@ -2413,7 +2414,7 @@ ActionMkTerm::mk_set_value(const Sort& element_sort)
   assert(d_smgr.has_value(element_sort));
 
   size_t n_unions =
-      d_rng.flip_coin() ? 2 : d_rng.pick(1, MURXLA_MAX_UNION_CHAIN_LENGTH);
+      d_rng.flip_coin() ? 2 : d_rng.pick<size_t>(1, MURXLA_MAX_UNION_CHAIN_LENGTH);
 
   std::unordered_set<Term> values;
   for (uint32_t i = 0; i < n_unions; ++i)
@@ -3627,7 +3628,7 @@ ActionMkFun::generate()
    * can always pick a function body (in the worst-case it's just the argument
    * with the supported sort). */
   std::vector<Sort> sorts;
-  uint32_t nsorts = d_rng.pick(0, MURXLA_MK_FUN_MAX_ARGS - 1);
+  uint32_t nsorts = d_rng.pick<uint32_t>(0, MURXLA_MK_FUN_MAX_ARGS - 1);
   for (uint32_t i = 0; i < nsorts; ++i)
   {
     sorts.push_back(

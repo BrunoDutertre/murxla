@@ -62,10 +62,12 @@ split_superset(const std::vector<size_t> superset, size_t subset_size)
   for (size_t lo = 0; end != superset.end(); lo += subset_size)
   {
     size_t hi  = lo + subset_size;
-    end        = hi > superset_size || (superset_size - hi) < subset_size
-                     ? superset.end()
-                     : begin + hi;
-    std::vector<size_t> subset(begin + lo, end);
+    if (hi > superset_size || (superset_size - hi) < subset_size) {
+      end = superset.end();
+    } else {
+      end = begin + (signed) hi;
+    }
+    std::vector<size_t> subset(begin + (signed) lo, end);
     subsets.push_back(subset);
   }
   assert(subsets.size() == (size_t) superset_size / subset_size);

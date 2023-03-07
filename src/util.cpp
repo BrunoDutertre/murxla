@@ -202,7 +202,7 @@ str_bin_to_dec(const std::string& str_bin, bool sign)
     uint32_t carry = 0;
     for (auto& digit : digits)
     {
-      uint32_t d = digit * 2 + carry;
+      uint32_t d = (uint32_t) digit * 2 + carry;
       carry      = d > 9;
       digit      = static_cast<char>(d % 10);
     }

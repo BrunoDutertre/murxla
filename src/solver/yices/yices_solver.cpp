@@ -45,7 +45,7 @@ YicesSort::sorts_to_yices_sorts(const std::vector<Sort>& sorts)
 size_t
 YicesSort::hash() const
 {
-  return d_sort;
+  return (size_t) d_sort;
 }
 
 bool
@@ -168,7 +168,7 @@ YicesTerm::terms_to_yices_terms(const std::vector<Term>& terms)
 size_t
 YicesTerm::hash() const
 {
-  return d_term;
+  return (size_t) d_term;
 }
 
 bool
@@ -561,8 +561,10 @@ YicesSolver::mk_value(Sort sort, const std::string& num, const std::string& den)
 
   term_t yices_res;
 
-  int32_t num32 = 0, den32 = 0;
-  int64_t num64 = 0, den64 = 0;
+  int32_t num32 = 0;
+  uint32_t den32 = 0;
+  int64_t num64 = 0;
+  uint64_t den64 = 0;
   bool nfits32 = true, dfits32 = true, nfits64 = true, dfits64 = true;
   try
   {
@@ -582,7 +584,15 @@ YicesSolver::mk_value(Sort sort, const std::string& num, const std::string& den)
   }
   try
   {
-    den32 = std::stoi(den);
+    unsigned long tmp = std::stoul(den);
+    if (tmp > UINT32_MAX)
+    {
+      dfits32 = false;
+    }
+    else
+    {
+      den32 = static_cast<uint32_t>(tmp);
+    }
   }
   catch (std::out_of_range& e)
   {
@@ -590,7 +600,7 @@ YicesSolver::mk_value(Sort sort, const std::string& num, const std::string& den)
   }
   try
   {
-    den64 = std::stoll(den);
+    den64 = std::stoull(den);
   }
   catch (std::out_of_range& e)
   {
@@ -655,7 +665,7 @@ YicesSolver::mk_value(Sort sort, const std::string& value, Base base)
   try
   {
     uint64_t tmp = std::stoul(value, nullptr, ibase);
-    if (tmp > UINT64_MAX)
+    if (tmp > UINT32_MAX)
     {
       fits32 = false;
     }
@@ -685,7 +695,7 @@ YicesSolver::mk_value(Sort sort, const std::string& value, Base base)
       yices_res = yices_bvconst_int32(bw, static_cast<int32_t>(val32));
       if (chkbits)
       {
-        str = std::bitset<64>(static_cast<int32_t>(val32))
+        str = std::bitset<64>((uint64_t) static_cast<int32_t>(val32))
                   .to_string()
                   .substr(64 - bw, bw);
       }
@@ -708,7 +718,7 @@ YicesSolver::mk_value(Sort sort, const std::string& value, Base base)
       yices_res = yices_bvconst_int64(bw, static_cast<int64_t>(val64));
       if (chkbits)
       {
-        str = std::bitset<64>(static_cast<int64_t>(val64))
+        str = std::bitset<64>(val64)
                   .to_string()
                   .substr(64 - bw, bw);
       }

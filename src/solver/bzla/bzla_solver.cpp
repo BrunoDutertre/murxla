@@ -893,7 +893,7 @@ BzlaSolver::mk_sort(SortKind kind, uint32_t esize, uint32_t ssize)
 Sort
 BzlaSolver::mk_sort(SortKind kind, const std::vector<Sort>& sorts)
 {
-  const BitwuzlaSort* bzla_res;
+  const BitwuzlaSort* bzla_res = nullptr; // initialize to fix compiler warning
 
   switch (kind)
   {

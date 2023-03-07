@@ -1632,9 +1632,9 @@ Cvc5Solver::mk_value(Sort sort, const std::string& value)
       uint32_t ew = sort->get_fp_exp_size();
       uint32_t sw = sort->get_fp_sig_size();
       cvc5_res    = TRACE_SOLVER(mkFloatingPoint,
-                              ew,
-                              sw,
-                              TRACE_SOLVER(mkBitVector, ew + sw, value, 2));
+				 ew,
+				 sw,
+				 TRACE_SOLVER(mkBitVector, ew + sw, value, 2u));
     }
     break;
 
@@ -1755,8 +1755,8 @@ Cvc5Solver::mk_value(Sort sort, const std::string& value, Base base)
       else
       {
         cvc5_res = d_rng.flip_coin()
-                       ? TRACE_SOLVER(mkBitVector, bw, value, 10)
-                       : TRACE_SOLVER(mkBitVector, bw, value.c_str(), 10);
+                       ? TRACE_SOLVER(mkBitVector, bw, value, 10u)
+                       : TRACE_SOLVER(mkBitVector, bw, value.c_str(), 10u);
       }
       break;
 
@@ -1769,8 +1769,8 @@ Cvc5Solver::mk_value(Sort sort, const std::string& value, Base base)
       else
       {
         cvc5_res = d_rng.flip_coin()
-                       ? TRACE_SOLVER(mkBitVector, bw, value, 16)
-                       : TRACE_SOLVER(mkBitVector, bw, value.c_str(), 16);
+                       ? TRACE_SOLVER(mkBitVector, bw, value, 16u)
+                       : TRACE_SOLVER(mkBitVector, bw, value.c_str(), 16u);
       }
       break;
 
@@ -1784,8 +1784,8 @@ Cvc5Solver::mk_value(Sort sort, const std::string& value, Base base)
       else
       {
         cvc5_res = d_rng.flip_coin()
-                       ? TRACE_SOLVER(mkBitVector, bw, value, 2)
-                       : TRACE_SOLVER(mkBitVector, bw, value.c_str(), 2);
+                       ? TRACE_SOLVER(mkBitVector, bw, value, 2u)
+                       : TRACE_SOLVER(mkBitVector, bw, value.c_str(), 2u);
       }
   }
   MURXLA_TEST(!cvc5_res.isNull());
@@ -1820,37 +1820,37 @@ Cvc5Solver::mk_special_value(Sort sort, const AbsTerm::SpecialValueKind& value)
         cvc5_res =
             d_rng.flip_coin()
                 ? TRACE_SOLVER(
-                    mkBitVector, bw, bv_special_value_zero_str(bw), 2)
+                    mkBitVector, bw, bv_special_value_zero_str(bw), 2u)
                 : TRACE_SOLVER(
-                    mkBitVector, bw, bv_special_value_zero_str(bw).c_str(), 2);
+                    mkBitVector, bw, bv_special_value_zero_str(bw).c_str(), 2u);
       }
       else if (value == AbsTerm::SPECIAL_VALUE_BV_ONE)
       {
         cvc5_res =
             d_rng.flip_coin()
-                ? TRACE_SOLVER(mkBitVector, bw, bv_special_value_one_str(bw), 2)
+                ? TRACE_SOLVER(mkBitVector, bw, bv_special_value_one_str(bw), 2u)
                 : TRACE_SOLVER(
-                    mkBitVector, bw, bv_special_value_one_str(bw).c_str(), 2);
+                    mkBitVector, bw, bv_special_value_one_str(bw).c_str(), 2u);
       }
       else if (value == AbsTerm::SPECIAL_VALUE_BV_ONES)
       {
         cvc5_res =
             d_rng.flip_coin()
                 ? TRACE_SOLVER(
-                    mkBitVector, bw, bv_special_value_ones_str(bw), 2)
+                    mkBitVector, bw, bv_special_value_ones_str(bw), 2u)
                 : TRACE_SOLVER(
-                    mkBitVector, bw, bv_special_value_ones_str(bw).c_str(), 2);
+                    mkBitVector, bw, bv_special_value_ones_str(bw).c_str(), 2u);
       }
       else if (value == AbsTerm::SPECIAL_VALUE_BV_MIN_SIGNED)
       {
         cvc5_res =
             d_rng.flip_coin()
                 ? TRACE_SOLVER(
-                    mkBitVector, bw, bv_special_value_min_signed_str(bw), 2)
+                    mkBitVector, bw, bv_special_value_min_signed_str(bw), 2u)
                 : TRACE_SOLVER(mkBitVector,
                                bw,
                                bv_special_value_min_signed_str(bw).c_str(),
-                               2);
+                               2u);
       }
       else
       {
@@ -1858,11 +1858,11 @@ Cvc5Solver::mk_special_value(Sort sort, const AbsTerm::SpecialValueKind& value)
         cvc5_res =
             d_rng.flip_coin()
                 ? TRACE_SOLVER(
-                    mkBitVector, bw, bv_special_value_max_signed_str(bw), 2)
+                    mkBitVector, bw, bv_special_value_max_signed_str(bw), 2u)
                 : TRACE_SOLVER(mkBitVector,
                                bw,
                                bv_special_value_max_signed_str(bw).c_str(),
-                               2);
+                               2u);
       }
     }
     break;

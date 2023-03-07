@@ -311,13 +311,14 @@ get_options(Options& options,
 {
   /* Check if a trace file was specified. */
   std::string trace_file_name;
-  for (int32_t i = 1; i < argc; i++)
+  size_t num_args = (size_t) argc; // fix compiler warning
+  for (size_t i = 1; i < num_args; i++)
   {
     std::string arg(argv[i]);
     if (arg == "-u" || arg == "--untrace")
     {
       i += 1;
-      check_next_arg(args.back(), i, argc);
+      check_next_arg(args.back(), i, num_args);
       options.untrace_file_name = argv[i];
       continue;
     }
@@ -571,7 +572,7 @@ parse_options(Options& options, int argc, char* argv[])
     {
       i += 1;
       check_next_arg(arg, i, size);
-      options.max_runs = std::stoi(args[i]);
+      options.max_runs = (uint32_t) std::stoul(args[i]);
     }
     else if (arg == "-l" || arg == "--smt-lib")
     {
