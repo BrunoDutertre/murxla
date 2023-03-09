@@ -210,12 +210,6 @@ Smt2Sort::is_dt_parametric() const
 }
 
 bool
-Smt2Sort::is_int() const
-{
-  return d_kind == SORT_INT;
-}
-
-bool
 Smt2Sort::is_fp() const
 {
   return d_kind == SORT_FP;
@@ -228,9 +222,21 @@ Smt2Sort::is_fun() const
 }
 
 bool
+Smt2Sort::is_int() const
+{
+  return d_kind == SORT_INT;
+}
+
+bool
 Smt2Sort::is_real() const
 {
   return d_kind == SORT_REAL;
+}
+
+bool
+Smt2Sort::is_reglan() const
+{
+  return d_kind == SORT_REGLAN;
 }
 
 bool
@@ -258,9 +264,9 @@ Smt2Sort::is_string() const
 }
 
 bool
-Smt2Sort::is_reglan() const
+Smt2Sort::is_uninterpreted() const
 {
-  return d_kind == SORT_REGLAN;
+  return d_kind == SORT_UNINTERPRETED;
 }
 
 uint32_t
@@ -386,10 +392,49 @@ Smt2Sort::get_set_element_sort() const
 /* Smt2Term                                                                   */
 /* -------------------------------------------------------------------------- */
 
+static inline size_t mix(size_t state, size_t h) {
+  const size_t a = 0xc6a4a7935bd1e995;
+
+  h *= a;
+  h ^= h >> 47;
+  h *= a;
+  state ^= h;
+  return a * state;
+}
+
 size_t
 Smt2Term::hash() const
 {
-  return d_id;
+  // assume 64bit size_t
+  //
+  // the hash function must not depend on d_id & d_leaf_kind
+  // (as d_id & d_leak_kind may be set after the term is created and added
+  // to an unordered_map), but the id of the children terms are already set
+  // when the term is created.
+  //
+  size_t h = 0xabcdef0123456;
+
+  h = mix(h, std::hash<std::string>{}(d_kind));
+  h = mix(h, std::hash<size_t>{}(d_args.size()));
+  h = mix(h, std::hash<size_t>{}(d_indices.size()));
+  if (get_kind() == Op::UNDEFINED) {
+    h = mix(h, std::hash<std::string>{}(d_repr));
+  } else {
+    size_t i = 0;
+    size_t n = d_args.size();
+    for (i = 0; i < n; i++) {
+      h = mix(h, std::hash<uint64_t>{}(d_args[i]->get_id()));
+    }
+    n = d_str_args.size();
+    for (i = 0; i < n; i++) {
+      h = mix(h, std::hash<std::string>{}(d_str_args[i]));
+    }
+    n = d_indices.size();
+    for (i = 0; i < n; i++) {
+      h = mix(h, std::hash<uint32_t>{}(d_indices[i]));
+    }
+  }
+  return h;
 }
 
 bool
@@ -401,7 +446,8 @@ Smt2Term::equals(const Term& other) const
   const std::vector<uint32_t>& indices     = smt2_term->get_indices_uint32();
   bool res = d_kind == smt2_term->get_kind() && d_args.size() == args.size()
              && d_indices.size() == indices.size()
-             && get_leaf_kind() == smt2_term->get_leaf_kind();
+             && d_str_args.size() == str_args.size();  // BD: added this.
+             // && get_leaf_kind() == smt2_term->get_leaf_kind(); BD: removed this to be consistent with the hash function
 
   if (!res) return false;
 

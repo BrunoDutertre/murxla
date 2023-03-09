@@ -38,8 +38,8 @@ class Smt2Sort : public AbsSort
   }
   ~Smt2Sort(){};
   size_t hash() const override;
-  bool equals(const Sort& other) const override;
   std::string to_string() const override;
+  bool equals(const Sort& other) const override;
   bool is_array() const override;
   bool is_bag() const override;
   bool is_bool() const override;
@@ -50,11 +50,13 @@ class Smt2Sort : public AbsSort
   bool is_fun() const override;
   bool is_int() const override;
   bool is_real() const override;
+  bool is_reglan() const override;
   bool is_rm() const override;
   bool is_seq() const override;
   bool is_set() const override;
   bool is_string() const override;
-  bool is_reglan() const override;
+  bool is_uninterpreted() const override;
+
   uint32_t get_bv_size() const override;
   std::string get_dt_name() const override;
   uint32_t get_fp_exp_size() const override;

@@ -147,14 +147,14 @@ class AbsSort
    */
   virtual bool is_real() const { return false; }
   /**
+   * Determine if this sort is a regular language sort.
+   * @return  True if this sort is a RegLan sort. */
+  virtual bool is_reglan() const { return false; }
+  /**
    * Determine if this sort is a rounding mode sort.
    * @return  True if this sort is a RoundingMode sort.
    */
   virtual bool is_rm() const { return false; }
-  /**
-   * Determine if this sort is a regular language sort.
-   * @return  True if this sort is a RegLan sort. */
-  virtual bool is_reglan() const { return false; }
   /**
    * Determine if this sort is a sequence sort.
    * @return  True if this sort is a Sequence sort.
